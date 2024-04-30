@@ -2,11 +2,13 @@ export const SET_LOADING = "@@details/SET_LOADING";
 export const SET_ERROR = "@@details/SET_ERROR";
 export const SET_COUNTRY = "@@details/SET_COUNTRY";
 export const CLEAR_DETAILS = "@@details/CLEAR_DETAILS";
+export const SET_NEIGHBORS = "@@details/SET_NEIGHBORS";
 
 export const initialState = {
   currentCountry: null,
   status: "idle",
   error: null,
+  neighbors: [],
 };
 
 export const detailsReducer = (state = initialState, action) => {
@@ -29,6 +31,13 @@ export const detailsReducer = (state = initialState, action) => {
         ...state,
         status: "fullfiled",
         currentCountry: action.country,
+      };
+
+    case SET_NEIGHBORS:
+      console.log(1);
+      return {
+        ...state,
+        neighbors: action.neighbors,
       };
 
     case CLEAR_DETAILS:
@@ -58,6 +67,11 @@ export const clearDetails = () => ({
   type: CLEAR_DETAILS,
 });
 
+export const setNeighbors = (neighbors) => ({
+  type: SET_NEIGHBORS,
+  neighbors,
+});
+
 export const loadCountryByName =
   (name) =>
   (dispatch, _, { client, api }) => {
@@ -66,5 +80,25 @@ export const loadCountryByName =
     client
       .get(api.searchByCountry(name))
       .then(({ data }) => dispatch(setCountry(data[0])))
+      .catch((err) => setError(err.message));
+  };
+
+// export const loadNeighborsByBorder =
+//   (border) =>
+//   (dispatch, _, { client, api }) => {
+//     client.get(
+//       api
+//         .filterByCode(border)
+//         .then(({ data }) => dispatch(setNeighbors(data.map((el) => el.name))))
+//         .catch(console.log(1))
+//     );
+//   };
+
+export const loadNeighborsByBorder =
+  (border) =>
+  (dispatch, _, { client, api }) => {
+    client
+      .get(api.filterByCode(border))
+      .then(({ data }) => dispatch(setNeighbors(data.map((el) => el.name))))
       .catch((err) => setError(err.message));
   };

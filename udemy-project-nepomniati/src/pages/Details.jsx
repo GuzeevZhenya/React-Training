@@ -20,11 +20,12 @@ export const Details = () => {
   const dispatch = useDispatch();
 
   const { currentCountry, error, status } = useSelector(selectDetails);
-  console.log(currentCountry);
+
   useEffect(() => {
     dispatch(loadCountryByName(name));
     return () => dispatch(clearDetails());
   }, [name, dispatch]);
+
   return (
     <div>
       <Button onClick={() => navigate(-1)}>

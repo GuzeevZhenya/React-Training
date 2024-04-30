@@ -3,6 +3,8 @@ import { useSelector, useDispatch } from "react-redux";
 
 import { loadCountry } from "../redux/country/country-reducer.js";
 import styled from "styled-components";
+import { loadNeighborsByBorder } from "../redux/details/details-reducer.js";
+import { Link } from "react-router-dom";
 
 const Wrapper = styled.section`
   margin-top: 3rem;
@@ -106,6 +108,15 @@ export const Info = (props) => {
     push,
   } = props;
 
+  const dispatch = useDispatch();
+  const neighbors = useSelector((state) => state.details.neighbors);
+
+  useEffect(() => {
+    if (borders.length) {
+      dispatch(loadNeighborsByBorder(borders));
+    }
+  }, [borders, dispatch]);
+
   return (
     <Wrapper>
       <InfoImage src={flag} alt={name} />
@@ -157,10 +168,12 @@ export const Info = (props) => {
             <span>There is no border countries</span>
           ) : (
             <TagGroup>
-              {[].map((b) => (
-                <Tag key={b} onClick={() => push(`/country/${b}`)}>
-                  {b}
-                </Tag>
+              {neighbors?.map((b) => (
+                // <Tag key={b} onClick={() => push(`/country/${b}`)}>
+                //   {b}
+                // </Tag>
+                // <Link onClick={() => push(`/country/${b}`)}>{b}</Link>
+                <Link to={`/country/${b}`}>{b}</Link>
               ))}
             </TagGroup>
           )}
