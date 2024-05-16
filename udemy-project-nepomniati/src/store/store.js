@@ -12,6 +12,9 @@ import { countryReducer } from "../redux/country/country-reducer";
 import { searchReducer } from "../redux/search/search-reducer";
 import { detailsReducer } from "../redux/details/details-reducer";
 import { loadState, saveState } from "../localStorage/localStorage";
+import { configureStore } from "@reduxjs/toolkit";
+
+import logger from "redux-logger";
 
 export const rootReducer = combineReducers({
   theme: themeReducer,
@@ -20,36 +23,24 @@ export const rootReducer = combineReducers({
   details: detailsReducer,
 });
 
-export const configurateStore = () => {
-  const persistedState = loadState();
-  const store = legacy_createStore(
-    rootReducer,
-
-    compose(
-      applyMiddleware(thunk.withExtraArgument({ client: axios, api })),
-      window.__REDUX_DEVTOOLS_EXTENSION__ &&
-        window.__REDUX_DEVTOOLS_EXTENSION__()
-    ),
-    persistedState
-  );
-
-  store.subscribe(() => {
-    saveState(store.getState());
-  });
-  return store;
-};
-
-// import { loadState, saveState } from "./local-storage";
-
-// // export const configurateStore = () => {
-// //   const persisdState = loadState;
-// //   const store = createStore(rootReducer, persisdState);
-// //   return store;
-// // };
+export const store = configureStore({
+  reducer: rootReducer,
+  devTools: true,
+  middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(logger),
+});
 
 // export const configurateStore = () => {
 //   const persistedState = loadState();
-//   const store = createStore(rootReducer, persistedState);
+//   const store = legacy_createStore(
+//     rootReducer,
+
+//     compose(
+//       applyMiddleware(thunk.withExtraArgument({ client: axios, api })),
+//       window.__REDUX_DEVTOOLS_EXTENSION__ &&
+//         window.__REDUX_DEVTOOLS_EXTENSION__()
+//     ),
+//     persistedState
+//   );
 
 //   store.subscribe(() => {
 //     saveState(store.getState());

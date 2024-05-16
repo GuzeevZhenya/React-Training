@@ -6,11 +6,12 @@ import "./index.css";
 import App from "./App";
 import { Provider } from "react-redux";
 import { configurateStore } from "./store/store";
+import { store } from "./store/store";
 
 ReactDOM.render(
   <React.StrictMode>
     <BrowserRouter>
-      <Provider store={configurateStore()}>
+      <Provider store={store}>
         <App />
       </Provider>
     </BrowserRouter>
