@@ -1,20 +1,14 @@
-import {
-  legacy_createStore,
-  combineReducers,
-  applyMiddleware,
-  compose,
-} from "redux";
+import { combineReducers } from "redux";
 import thunk from "redux-thunk";
-import { themeReducer } from "../redux/theme/theme-reducer";
+
+import { themeReducer } from "../features/theme/theme-slice";
 import axios from "axios";
 import * as api from "../config";
-import { countryReducer } from "../redux/country/country-reducer";
-import { searchReducer } from "../redux/search/search-reducer";
+import { searchReducer } from "../features/controls/controls-slice";
 import { detailsReducer } from "../redux/details/details-reducer";
 import { loadState, saveState } from "../localStorage/localStorage";
 import { configureStore } from "@reduxjs/toolkit";
-
-import logger from "redux-logger";
+import { countryReducer } from "../features/country/countries-slice";
 
 export const rootReducer = combineReducers({
   theme: themeReducer,
@@ -26,24 +20,14 @@ export const rootReducer = combineReducers({
 export const store = configureStore({
   reducer: rootReducer,
   devTools: true,
-  middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(logger),
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware({
+      thunk: {
+        extraArgument: {
+          client: axios,
+          api,
+        },
+      },
+      serializableCheck: false,
+    }),
 });
-
-// export const configurateStore = () => {
-//   const persistedState = loadState();
-//   const store = legacy_createStore(
-//     rootReducer,
-
-//     compose(
-//       applyMiddleware(thunk.withExtraArgument({ client: axios, api })),
-//       window.__REDUX_DEVTOOLS_EXTENSION__ &&
-//         window.__REDUX_DEVTOOLS_EXTENSION__()
-//     ),
-//     persistedState
-//   );
-
-//   store.subscribe(() => {
-//     saveState(store.getState());
-//   });
-//   return store;
-// };

@@ -3,7 +3,7 @@ import { Search } from "./Search";
 import { CustomSelect } from "./CustomSelect";
 import { useDispatch, useSelector } from "react-redux";
 import { selectRegion } from "../redux/search/controls-selector";
-import { setRegion } from "../redux/search/search-reducer";
+import { setRegion } from "../features/controls/controls-slice";
 
 const optionsMap = {
   Africa: { value: "Africa", label: "Africa" },
@@ -33,8 +33,6 @@ export const Controls = () => {
   const handleSelect = (reg) => {
     dispatch(setRegion(reg?.value || ""));
   };
-
-  console.log(options[region]);
 
   return (
     <Wrapper>
